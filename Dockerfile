@@ -1,22 +1,23 @@
-FROM richarvey/nginx-php-fpm:latest
+FROM php:8.2-fpm
 
-COPY . .
+# Install Nginx
+RUN apt-get update && apt-get install -y nginx
 
-# Image config
-ENV SKIP_COMPOSER 1
-ENV WEBROOT /var/www/html/public
-ENV PHP_ERRORS_STDERR 1
-ENV RUN_SCRIPTS 1
-ENV REAL_IP_HEADER 1
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Laravel config
-ENV APP_ENV production
-ENV APP_DEBUG true
+# Copy application files
+COPY . /var/www/html
 
-# Allow composer to run as root
-ENV COMPOSER_ALLOW_SUPERUSER 1
+# Set working directory
+WORKDIR /var/www/html
 
 # Copy Nginx configuration file
 COPY nginx-site.conf /etc/nginx/sites-available/default
 
-CMD ["/start.sh"]
+# Ensure permissions are correct
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Start PHP-FPM and Nginx
+CMD ["sh", "-c", "php-fpm & nginx -g 'daemon off;'"]
