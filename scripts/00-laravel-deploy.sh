@@ -18,3 +18,9 @@ echo "Running migrations..."
 php artisan migrate --force
 
 echo "done deploying"
+
+# Start PHP-FPM
+service php8.2-fpm start
+
+# Start Nginx
+nginx -g "daemon off;"
