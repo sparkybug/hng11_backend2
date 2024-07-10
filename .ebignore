@@ -1,0 +1,12 @@
+/vendor/*
+/node_modules/*
+/storage/*
+/tests/*
+.env
+.git
+.gitignore
+.ebignore
+.DS_Store
+npm-debug.log
+yarn-error.log
+
